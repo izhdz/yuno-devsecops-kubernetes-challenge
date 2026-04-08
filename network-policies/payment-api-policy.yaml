@@ -1,0 +1,30 @@
+# Allows Egress to Token Vault and PSP
+# Allows Ingress from Ingress Gateway
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: payment-api-allow
+  namespace: cde-production
+spec:
+  podSelector:
+    matchLabels:
+      app: payment-authorization-api
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: ingress-gateway
+
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: token-vault-service
+    - to:
+        - podSelector:
+            matchLabels:
+              app: psp-connector

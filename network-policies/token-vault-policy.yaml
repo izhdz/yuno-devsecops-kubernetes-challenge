@@ -1,0 +1,21 @@
+# Accepts Ingress from Payment Auth API and Reconciliation
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: token-vault-restrict
+spec:
+  podSelector:
+    matchLabels:
+      app: token-vault-service
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: payment-authorization-api
+        - podSelector:
+            matchLabels:
+              app: reconciliation-job
