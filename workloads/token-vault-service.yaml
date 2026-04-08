@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: token-vault-service
+  namespace: cde-production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: token-vault-service
+  template:
+    metadata:
+      labels:
+        app: token-vault-service
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10002
+
+      containers:
+        - name: token-vault
+          image: registry.yuno-internal.io/token-vault:latest
+
+          ports:
+            - containerPort: 8080
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
