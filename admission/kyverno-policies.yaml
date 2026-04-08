@@ -7,7 +7,7 @@ spec:
   validationFailureAction: Enforce
   background: true
   rules:
-    - name: disallow-root
+    - name: disallow-root-pod-level
       match:
         resources:
           kinds: [Pod]
@@ -15,7 +15,7 @@ spec:
         resources:
           namespaces: ["kyverno", "kube-system"]
 
-    - name: disallow-root
+    - name: disallow-root-cluster
       match:
         resources:
           kinds:
