@@ -3,6 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: token-vault-restrict
+  namespace: cde-production
 spec:
   podSelector:
     matchLabels:
@@ -16,6 +17,9 @@ spec:
         - podSelector:
             matchLabels:
               app: payment-authorization-api
-        - podSelector:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: batch-jobs
+          podSelector:
             matchLabels:
               app: reconciliation-job

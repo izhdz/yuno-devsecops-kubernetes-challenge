@@ -15,7 +15,10 @@ spec:
 
   ingress:
     - from:
-        - podSelector:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+          podSelector:
             matchLabels:
               app: ingress-gateway
 
@@ -24,7 +27,13 @@ spec:
         - podSelector:
             matchLabels:
               app: token-vault-service
+      ports:
+        - port: 8080
+          protocol: TCP
     - to:
         - podSelector:
             matchLabels:
               app: psp-connector
+      ports:
+        - port: 8080
+          protocol: TCP

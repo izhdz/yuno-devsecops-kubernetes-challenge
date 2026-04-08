@@ -6,8 +6,14 @@ metadata:
 spec:
   validationFailureAction: Enforce
   background: true
-
   rules:
+    - name: disallow-root
+      match:
+        resources:
+          kinds: [Pod]
+      exclude:
+        resources:
+          namespaces: ["kyverno", "kube-system"]
 
     - name: disallow-root
       match:
@@ -20,6 +26,20 @@ spec:
           spec:
             securityContext:
               runAsNonRoot: true
+
+    - name: disallow-root-container-override
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "Containers must not override runAsUser to 0"
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.containers[].securityContext.runAsUser }}"
+                operator: In
+                value: [0]
 
     - name: disallow-privileged
       match:
@@ -56,6 +76,10 @@ spec:
         pattern:
           spec:
             containers:
+              - image: "registry.yuno-internal.io/*"
+            =(initContainers):
+              - image: "registry.yuno-internal.io/*"
+            =(ephemeralContainers):
               - image: "registry.yuno-internal.io/*"
 
     - name: require-resources
