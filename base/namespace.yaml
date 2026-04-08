@@ -1,0 +1,8 @@
+# CDE Production Namespace Definition
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cde-production
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
