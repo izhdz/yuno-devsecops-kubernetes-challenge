@@ -16,6 +16,8 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 10002
+        seccompProfile:
+          type: RuntimeDefault
 
       containers:
         - name: token-vault
