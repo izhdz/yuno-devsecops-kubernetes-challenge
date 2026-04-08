@@ -1,0 +1,12 @@
+
+# TEST should FAIL
+# REASON -resources: -limits not set
+# IF your own manifest fails, please refer to kyverno-policies.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-no-limits
+spec:
+  containers:
+    - name: nginx
+      image: registry.yuno-internal.io/nginx:latest

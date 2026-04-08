@@ -1,0 +1,74 @@
+# CDE Production Cluster Policies
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: security-baseline
+spec:
+  validationFailureAction: Enforce
+  background: true
+
+  rules:
+
+    - name: disallow-root
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "Running as root is not allowed"
+        pattern:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+
+    - name: disallow-privileged
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "Privileged containers are not allowed"
+        pattern:
+          spec:
+            containers:
+              - securityContext:
+                  privileged: false
+
+    - name: disallow-hostpath
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "hostPath volumes are not allowed"
+        pattern:
+          spec:
+            =(volumes):
+              - X(hostPath): "null"
+
+    - name: require-approved-registry
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "Images must come from registry.yuno-internal.io"
+        pattern:
+          spec:
+            containers:
+              - image: "registry.yuno-internal.io/*"
+
+    - name: require-resources
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "CPU and memory limits are required"
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  limits:
+                    cpu: "?*"
+                    memory: "?*"

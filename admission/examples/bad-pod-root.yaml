@@ -1,0 +1,13 @@
+# TEST should FAIL
+# REASON runAsUser 0 is disallowed
+# IF your own manifest fails, please refer to kyverno-policies.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-root-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      securityContext:
+        runAsUser: 0
